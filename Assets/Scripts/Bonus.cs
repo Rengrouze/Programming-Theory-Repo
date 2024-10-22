@@ -26,4 +26,6 @@ public abstract class Bonus : MonoBehaviour
 
     // Each specific bonus will implement this method
     protected abstract void ApplyBonus();
+
 }
+

@@ -6,8 +6,10 @@ public class Ball : MonoBehaviour
 
     [SerializeField] private AudioClip hitSound; // Sound to play when the ball hits something
     private AudioSource audioSource; // AudioSource to play the sound
+
     [Range(0f, 1f)] public float volume = 0.5f; // Volume range from 0 to 1
     private float lowerBound = -10f; // Lower bound for the ball's position
+
 
     private void Start()
     {
@@ -29,6 +31,7 @@ public class Ball : MonoBehaviour
         }
     }
 
+
     private void Update()
     {
         // Check if the ball has fallen below the lower bound
@@ -36,6 +39,7 @@ public class Ball : MonoBehaviour
         {
             gameManager.SetBallOnScreen(gameManager.GetBallOnScreen() - 1); // Decrease the count of balls on screen
             Destroy(gameObject); // Destroy the ball when out of bounds
+
         }
     }
 }

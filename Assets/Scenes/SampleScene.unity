@@ -4324,6 +4324,11 @@ MonoBehaviour:
   ballsLeft: 0
   ballOnScreen: 0
   isGameOn: 0
+  scoreMultiplier: 1
+  bonusSpawnRate: 2
+  bonusPrefabs:
+  - {fileID: 7952886188716922488, guid: 6dc124aa27f182045b05780f62eff1f1, type: 3}
+  - {fileID: 6770495146922804275, guid: 71b3ab9c4a26b4f4781f10c1c34ad5d6, type: 3}
   ball: {fileID: 2381260154636461820, guid: 866dea45c79985442bd8b39ac9020895, type: 3}
   spawnRate: 0.2
   titleScreen: {fileID: 363980211}
@@ -4331,6 +4336,10 @@ MonoBehaviour:
   highScoreText: {fileID: 541312562}
   finalScoreText: {fileID: 450346817}
   ballsLeftText: {fileID: 1778087900}
+  bonusSpawnMinX: -6
+  bonusSpawnMaxX: 6
+  bonusSpawnMinY: -1.8
+  bonusSpawnMaxY: 5.3
   gameOverSound: {fileID: 8300000, guid: 0ba80f1be1fc34047b074bfd4a6040c0, type: 3}
   popSound: {fileID: 8300000, guid: b5ddf37d8024ee04faf6dc02f88b6c62, type: 3}
   volume: 0.1

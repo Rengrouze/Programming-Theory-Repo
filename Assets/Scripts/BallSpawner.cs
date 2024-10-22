@@ -18,8 +18,10 @@ public class BallSpawner : Bonus
         for (int i = 0; i < ballCount; i++)
         {
             Instantiate(ballPrefab, transform.position, Quaternion.identity);
+
             gameManager.SetBallOnScreen(gameManager.GetBallOnScreen() + 1); // Use the setter to update ballOnScreen
         }
         Debug.Log($"{ballCount} balls have spawned");
+
     }
 }

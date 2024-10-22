@@ -31,8 +31,10 @@ public class BoxValidator : MonoBehaviour
 
     private bool IsBall(Collider other)
     {
+
         return other.CompareTag("Ball");
     }
+
 
     private void HandleBallEntry(Collider ball)
     {
