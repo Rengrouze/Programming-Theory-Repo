@@ -18,9 +18,11 @@ public class ScoreDoubler : Bonus
 
     private IEnumerator DoubleScore()
     {
-        Debug.Log("double score bonus !");
-        gameManager.scoreMultiplier = 2; // Apply the score multiplier
+
+        Debug.Log("Double score bonus!");
+        gameManager.ScoreMultiplier = 2; // Apply the score multiplier
         yield return new WaitForSeconds(bonusDuration); // Wait for the bonus duration
-        gameManager.scoreMultiplier = 1; // Reset the multiplier after the bonus ends
+        gameManager.ScoreMultiplier = 1; // Reset the multiplier after the bonus ends
     }
 }
+

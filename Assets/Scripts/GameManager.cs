@@ -5,27 +5,28 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public int score = 0;
-    public int highScore = 0;
+    public int score { get; private set; } = 0; // Score is publicly readable but only writable within this class
+    public int highScore { get; private set; } = 0; // Same for highScore
     public int startingBalls;
-    public int ballsLeft;
-    public int ballOnScreen = 0; // Keep track of how many balls are currently on the screen
+
+    public int ballsLeft { get; private set; } // Make ballsLeft read-only from outside
+    private int ballOnScreen = 0; // Keep track of how many balls are currently on the screen
     private float timer = 0f; // Timer to count the time after the last ball is destroyed
     private float timeToEndGame = 2f; // Time before ending the game
 
+    public bool isGameOn { get; private set; } = false; // Make isGameOn read-only from outside
+    public int scoreMultiplier { get; private set; } = 1; // Same for scoreMultiplier
 
-    public bool isGameOn = false;
-    public int scoreMultiplier = 1;
     [SerializeField] private float bonusSpawnRate = 2f; // Time between bonus spawns
     [SerializeField] GameObject[] bonusPrefabs; // Array to hold bonus prefabs
     private float nextBonusSpawnTime = 0f; // Keeps track of when the next bonus can be spawned
-    
-
 
     [SerializeField] GameObject ball;
-    [SerializeField] private float spawnRate = 0.16f;  // Time between spawns (4 per second)
-    private float nextSpawnTime = 0f;  // Keeps track of when the next ball can be spawned
-    [SerializeField] GameObject titleScreen;  // Reference to the title screen object
+    [SerializeField] private float spawnRate = 0.25f; // Time between spawns (4 per second)
+    private float nextSpawnTime = 0f; // Keeps track of when the next ball can be spawned
+
+    [SerializeField] GameObject titleScreen; // Reference to the title screen object
+
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI highScoreText;
     [SerializeField] TextMeshProUGUI finalScoreText;
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioClip gameOverSound;
     [SerializeField] private AudioClip popSound;
     private AudioSource audioSource;
+
     [Range(0f, 1f)] // This will create a slider in the inspector for volume control
     public float volume = 1f; // Volume range from 0 to 1
 
@@ -55,18 +57,23 @@ public class GameManager : MonoBehaviour
     {
         if (isGameOn)
         {
-            ballsLeftText.text = "Peebles left : " + ballsLeft;
+            ballsLeftText.text = "Peebles left: " + ballsLeft;
             ballsLeftText.gameObject.SetActive(true);
-            dropBall();
+
+
+            DropBall();
+
             SpawnBonuses();
 
             // Check if the game should end
             if (ballsLeft <= 0 && ballOnScreen <= 0)
             {
                 timer += Time.deltaTime; // Increment the timer
-                if (timer >= timeToEndGame) // Check if 5 seconds have passed
+
+                if (timer >= timeToEndGame) // Check if time to end the game
                 {
-                    endGame();
+                    EndGame();
+
                 }
             }
             else
@@ -76,18 +83,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    void dropBall()
+    public void DropBall()
     {
         // Check if space is pressed or the left mouse button is clicked, and enough time has passed since the last spawn
         if ((Input.GetKey(KeyCode.Space) || Input.GetMouseButtonDown(0)) && Time.time >= nextSpawnTime && ballsLeft > 0)
         {
-            // Get the mouse position in screen coordinates
-            Vector3 mousePosition = Input.mousePosition;
 
-            // Create a Ray from the camera through the mouse position
-            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-            Debug.DrawRay(ray.origin, ray.direction * 10f, Color.red); // Draw the ray for 10 units
+            // Spawn the ball
+            Instantiate(ball, new Vector3(0, 9.19f, 0), Quaternion.identity);
+            audioSource.volume = volume; // Set the audio source volume
+            audioSource.PlayOneShot(popSound);
+            ballOnScreen++; // Increment the ball counter
+
 
             // Perform a raycast to find the point where the ray intersects with the plane
             Plane plane = new Plane(Vector3.up, new Vector3(0, 9.19f, 0)); // Creating a horizontal plane at Y = 9.19f
@@ -117,13 +124,12 @@ public class GameManager : MonoBehaviour
     }
 
 
+    // Public method to update the score
+    public void updateScore(int pointsToAdd)
 
-
-
-    public void updateScore(int points)
     {
-        score += points;
-        UpdateScoreUI();
+        score += pointsToAdd * scoreMultiplier; // Update score with multiplier
+        UpdateScoreUI(); // Call a method to update the UI if needed
     }
 
     void UpdateScoreUI()
@@ -131,13 +137,16 @@ public class GameManager : MonoBehaviour
         scoreText.text = score.ToString();
     }
 
-    public void startGame()
+
+    // Function called by the Start Button
+    public void StartGame()
+
     {
         Debug.Log("startGame() was clicked");
         if (!isGameOn)
         {
             isGameOn = true;
-            titleScreen.SetActive(false);  // Hide the title screen
+            titleScreen.SetActive(false); // Hide the title screen
             scoreText.gameObject.SetActive(true); // Show the score text
             highScoreText.gameObject.SetActive(false);
 
@@ -153,64 +162,52 @@ public class GameManager : MonoBehaviour
         {
             // Choose a random bonus from the array
             GameObject randomBonus = bonusPrefabs[Random.Range(0, bonusPrefabs.Length)];
-            string bonusType = randomBonus.name; // Assuming each bonus prefab has a unique name
 
-            // Check if this bonus type is already active
-            
-                // Choose a random position within the play area
-                Vector3 spawnPosition = new Vector3(
-                    Random.Range(bonusSpawnMinX, bonusSpawnMaxX),
-                    Random.Range(bonusSpawnMinY, bonusSpawnMaxY),
-                    0f
-                );
 
-                // Instantiate the bonus
-                Instantiate(randomBonus, spawnPosition, Quaternion.identity);
+            // Choose a random position within the play area
+            Vector3 spawnPosition = new Vector3(
+                Random.Range(-6.45f, 6.45f),
+                Random.Range(-1.8f, 5.30f),
+                0f
+            );
 
-              
+            // Instantiate the bonus
+            Instantiate(randomBonus, spawnPosition, Quaternion.identity);
 
-                // Set the next time when a bonus can be spawned
-                nextBonusSpawnTime = Time.time + bonusSpawnRate; // Update the next spawn time
-            
+            // Set the next time when a bonus can be spawned
+            nextBonusSpawnTime = Time.time + bonusSpawnRate; // Update the next spawn time
         }
     }
 
+    public void EndGame()
 
-
-    public void endGame()
     {
         audioSource.volume = volume; // Set the audio source volume
         audioSource.PlayOneShot(gameOverSound);
 
         // Wait for 5 seconds before resetting the game
         StartCoroutine(ResetGameAfterDelay(5f));
-        // Hide the score text
         scoreText.gameObject.SetActive(false);
         ballsLeftText.gameObject.SetActive(false);
-        // Show the final score text
         finalScoreText.gameObject.SetActive(true);
         finalScoreText.text = "Score: " + score.ToString();
 
-        // Set the game state to not running
         isGameOn = false;
 
-        // Update the high score if the current score is greater
         if (score > highScore)
         {
-            highScore = score;  // Update high score
-            highScoreText.text = "High Score: " + highScore.ToString();  // Update UI
+            highScore = score; // Update high score
+            highScoreText.text = "High Score: " + highScore.ToString(); // Update UI
         }
-
-        // Wait for 5 seconds before resetting the game
-        StartCoroutine(ResetGameAfterDelay(5f));
     }
 
-    // Coroutine to reset the game state after a delay
     private IEnumerator ResetGameAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);  // Wait for the specified delay
-                                                 //remove all bonus on screen
-                                                 // Remove all bonuses on screen
+
+        yield return new WaitForSeconds(delay); // Wait for the specified delay
+
+        // Remove all bonuses on screen
+
         GameObject[] bonuses = GameObject.FindGameObjectsWithTag("Bonus");
         foreach (GameObject bonus in bonuses)
         {
@@ -222,26 +219,49 @@ public class GameManager : MonoBehaviour
         score = 0;
         ballsLeft = startingBalls;
 
-        // Hide the final score text
         finalScoreText.gameObject.SetActive(false);
-
-        // Show the title screen
         titleScreen.SetActive(true);
-
-        // Ensure the score text and high score text are reset
         scoreText.gameObject.SetActive(false);
-        
         highScoreText.gameObject.SetActive(true);
 
-        // Optionally, update score display if the game is restarted
         UpdateScoreUI();
-        Debug.Log("game ready to start again");
+        Debug.Log("Game ready to start again");
     }
-
 
     // Call this method when a ball is destroyed to decrement ballOnScreen
     public void BallDestroyed()
     {
         ballOnScreen--; // Decrease the count of balls on screen
+    }
+
+    // Getter for ballsLeft
+    public int GetBallsLeft()
+    {
+        return ballsLeft;
+    }
+
+    // Setter for ballsLeft
+    public void SetBallsLeft(int value)
+    {
+        ballsLeft = value;
+    }
+
+    // Getter and setter for scoreMultiplier
+    public int ScoreMultiplier
+    {
+        get => scoreMultiplier;
+        set => scoreMultiplier = value;
+    }
+
+    // Getter for ballOnScreen
+    public int GetBallOnScreen()
+    {
+        return ballOnScreen;
+    }
+
+    // Setter for ballOnScreen
+    public void SetBallOnScreen(int count)
+    {
+        ballOnScreen = count;
     }
 }

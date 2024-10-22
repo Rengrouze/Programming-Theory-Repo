@@ -7,6 +7,7 @@ public class BallSpawner : Bonus
     private GameManager gameManager;
     [SerializeField] private GameObject ballPrefab; // The ball prefab to spawn
     [SerializeField] private int ballCount = 3; // Number of balls to spawn
+
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
@@ -17,9 +18,10 @@ public class BallSpawner : Bonus
         for (int i = 0; i < ballCount; i++)
         {
             Instantiate(ballPrefab, transform.position, Quaternion.identity);
-            gameManager.ballOnScreen++;
 
+            gameManager.SetBallOnScreen(gameManager.GetBallOnScreen() + 1); // Use the setter to update ballOnScreen
         }
-        Debug.Log("3 balls have spawned");
+        Debug.Log($"{ballCount} balls have spawned");
+
     }
 }

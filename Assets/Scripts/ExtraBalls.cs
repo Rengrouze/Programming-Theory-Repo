@@ -13,7 +13,10 @@ public class ExtraBalls : Bonus
 
     protected override void ApplyBonus()
     {
-        gameManager.ballsLeft += 5; // Add 5 extra balls to the player's reserve
+
+        int currentBalls = gameManager.GetBallsLeft(); // Get current balls left
+        gameManager.SetBallsLeft(currentBalls + 5); // Add 5 extra balls to the player's reserve
+
         Debug.Log("5 balls gained");
     }
 }
