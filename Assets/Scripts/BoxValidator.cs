@@ -18,14 +18,9 @@ public class BoxValidator : MonoBehaviour
     {
         if (IsBall(other))
         {
-<<<<<<< Updated upstream
-            // Call the updateScore function from the GameManager script
-            gameManager.updateScore(points);
-=======
             HandleBallEntry(other);
         }
     }
->>>>>>> Stashed changes
 
     private void InitializeComponents()
     {
@@ -41,15 +36,15 @@ public class BoxValidator : MonoBehaviour
 
     private void HandleBallEntry(Collider ball)
     {
-        UpdateScore();
-        PlayPointSound();
-        Destroy(ball.gameObject);
+        UpdateScore(); // Update the score
+        PlayPointSound(); // Play the sound effect
+        Destroy(ball.gameObject); // Destroy the ball
     }
 
     private void UpdateScore()
     {
         int scoreToAdd = points;
-        gameManager.updateScore(scoreToAdd);
+        gameManager.updateScore(scoreToAdd); // Call the updateScore function from the GameManager script
     }
 
     private void PlayPointSound()

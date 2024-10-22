@@ -6,13 +6,8 @@ public class Ball : MonoBehaviour
 
     [SerializeField] private AudioClip hitSound; // Sound to play when the ball hits something
     private AudioSource audioSource; // AudioSource to play the sound
-<<<<<<< Updated upstream
-    [Range(0f, 1f)] // This will create a slider in the inspector for volume control
-    public float volume = 1f; // Volume range from 0 to 1
-=======
     [Range(0f, 1f)] public float volume = 0.5f; // Volume range from 0 to 1
-    private float lowerBound = -10f;
->>>>>>> Stashed changes
+    private float lowerBound = -10f; // Lower bound for the ball's position
 
     private void Start()
     {
@@ -33,16 +28,14 @@ public class Ball : MonoBehaviour
             audioSource.PlayOneShot(hitSound);
         }
     }
-<<<<<<< Updated upstream
-=======
 
     private void Update()
     {
+        // Check if the ball has fallen below the lower bound
         if (transform.position.y < lowerBound)
         {
             gameManager.SetBallOnScreen(gameManager.GetBallOnScreen() - 1); // Decrease the count of balls on screen
             Destroy(gameObject); // Destroy the ball when out of bounds
         }
     }
->>>>>>> Stashed changes
 }
