@@ -1035,11 +1035,11 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1552415004}
-  - {fileID: 1821163625}
   - {fileID: 717163410}
-  - {fileID: 41115933}
   - {fileID: 1552573656}
   - {fileID: 1650018869}
+  - {fileID: 41115933}
+  - {fileID: 1821163625}
   m_Father: {fileID: 1490407647}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &313162474
@@ -4325,10 +4325,9 @@ MonoBehaviour:
   ballOnScreen: 0
   isGameOn: 0
   scoreMultiplier: 1
-  bonusSpawnRate: 5
+  bonusSpawnRate: 2
   bonusPrefabs:
   - {fileID: 7952886188716922488, guid: 6dc124aa27f182045b05780f62eff1f1, type: 3}
-  - {fileID: 1157764333700474762, guid: 4f1c4f38b0374ab459879a4bf2e7035f, type: 3}
   - {fileID: 6770495146922804275, guid: 71b3ab9c4a26b4f4781f10c1c34ad5d6, type: 3}
   ball: {fileID: 2381260154636461820, guid: 866dea45c79985442bd8b39ac9020895, type: 3}
   spawnRate: 0.2
@@ -4337,10 +4336,10 @@ MonoBehaviour:
   highScoreText: {fileID: 541312562}
   finalScoreText: {fileID: 450346817}
   ballsLeftText: {fileID: 1778087900}
-  bonusSpawnMinX: -5
-  bonusSpawnMaxX: 5
-  bonusSpawnMinY: 1
-  bonusSpawnMaxY: 5
+  bonusSpawnMinX: -6
+  bonusSpawnMaxX: 6
+  bonusSpawnMinY: -1.8
+  bonusSpawnMaxY: 5.3
   gameOverSound: {fileID: 8300000, guid: 0ba80f1be1fc34047b074bfd4a6040c0, type: 3}
   popSound: {fileID: 8300000, guid: b5ddf37d8024ee04faf6dc02f88b6c62, type: 3}
   volume: 0.1
@@ -4674,7 +4673,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2645412293348712773, guid: 8f7d2ad1cc4995a4f837eeafa31216ad, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2645412293348712773, guid: 8f7d2ad1cc4995a4f837eeafa31216ad, type: 3}
       propertyPath: m_TagString
