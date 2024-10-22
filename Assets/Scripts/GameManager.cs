@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour
     public int score { get; private set; } = 0; // Score is publicly readable but only writable within this class
     public int highScore { get; private set; } = 0; // Same for highScore
     public int startingBalls;
-
     public int ballsLeft { get; private set; } // Make ballsLeft read-only from outside
     private int ballOnScreen = 0; // Keep track of how many balls are currently on the screen
     private float timer = 0f; // Timer to count the time after the last ball is destroyed
@@ -26,17 +25,10 @@ public class GameManager : MonoBehaviour
     private float nextSpawnTime = 0f; // Keeps track of when the next ball can be spawned
 
     [SerializeField] GameObject titleScreen; // Reference to the title screen object
-
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI highScoreText;
     [SerializeField] TextMeshProUGUI finalScoreText;
     [SerializeField] TextMeshProUGUI ballsLeftText;
-
-    // Variables for bonus spawn limits
-    [SerializeField] private float bonusSpawnMinX = -6f; // Minimum X spawn position
-    [SerializeField] private float bonusSpawnMaxX = 6f;  // Maximum X spawn position
-    [SerializeField] private float bonusSpawnMinY = -1.8f;  // Minimum Y spawn position
-    [SerializeField] private float bonusSpawnMaxY = 5.30f;  // Maximum Y spawn position
 
     [SerializeField] private AudioClip gameOverSound;
     [SerializeField] private AudioClip popSound;
@@ -50,7 +42,6 @@ public class GameManager : MonoBehaviour
         audioSource = gameObject.AddComponent<AudioSource>();
         ballsLeft = startingBalls;
         UpdateScoreUI();
-        
     }
 
     void Update()
@@ -60,20 +51,16 @@ public class GameManager : MonoBehaviour
             ballsLeftText.text = "Peebles left: " + ballsLeft;
             ballsLeftText.gameObject.SetActive(true);
 
-
             DropBall();
-
             SpawnBonuses();
 
             // Check if the game should end
             if (ballsLeft <= 0 && ballOnScreen <= 0)
             {
                 timer += Time.deltaTime; // Increment the timer
-
                 if (timer >= timeToEndGame) // Check if time to end the game
                 {
                     EndGame();
-
                 }
             }
             else
@@ -85,48 +72,43 @@ public class GameManager : MonoBehaviour
 
     public void DropBall()
     {
-        // Check if space is pressed or the left mouse button is clicked, and enough time has passed since the last spawn
+        // Check if space is pressed and enough time has passed since the last spawn
         if ((Input.GetKey(KeyCode.Space) || Input.GetMouseButtonDown(0)) && Time.time >= nextSpawnTime && ballsLeft > 0)
         {
+            // Get mouse position in screen coordinates
+            Vector3 mouseScreenPosition = Input.mousePosition;
 
-            // Spawn the ball
-            Instantiate(ball, new Vector3(0, 9.19f, 0), Quaternion.identity);
+            // Convert mouse position to world position
+            Vector3 spawnPosition = Camera.main.ScreenToWorldPoint(new Vector3(mouseScreenPosition.x, mouseScreenPosition.y, 10f)); // Z value set to 10 to place it in front of the camera
+
+            // Clamp the X position to the min and max values
+            spawnPosition.x = Mathf.Clamp(spawnPosition.x, -6.45f, 6.45f);
+            spawnPosition.y = 9.19f; // Fixed Y position
+            spawnPosition.z = 0f;    // Fixed Z position
+
+            // Spawn the ball at the chosen position
+            Instantiate(ball, spawnPosition, Quaternion.identity);
             audioSource.volume = volume; // Set the audio source volume
             audioSource.PlayOneShot(popSound);
             ballOnScreen++; // Increment the ball counter
 
+            // Remove a ball from reserve
+            ballsLeft--;
 
-            // Perform a raycast to find the point where the ray intersects with the plane
-            Plane plane = new Plane(Vector3.up, new Vector3(0, 9.19f, 0)); // Creating a horizontal plane at Y = 9.19f
-            float enter;
-
-
-            if (plane.Raycast(ray, out enter))
-            {
-                // Get the world position where the ray intersects the plane
-                Vector3 worldPosition = ray.GetPoint(enter);
-
-                // Clamp the X position between -6.45 and 6.45
-                float clampedX = Mathf.Clamp(worldPosition.x, -6.45f, 6.45f);
-
-                // Create the spawn position using the clamped X value and fixed Y (9.19) and Z (0)
-                Vector3 spawnPosition = new Vector3(clampedX, 9.19f, 0f);
-
-                // Spawn the ball
-                Instantiate(ball, spawnPosition, Quaternion.identity);
-                audioSource.volume = volume; // Set the audio source volume
-                audioSource.PlayOneShot(popSound);
-                ballOnScreen++; // Increment the ball counter
-                ballsLeft--; // Decrease the number of balls left
-                nextSpawnTime = Time.time + spawnRate; // Set the next spawn time
-            }
+            // Set the next time when a ball can be spawned
+            nextSpawnTime = Time.time + spawnRate;
+            Debug.Log("You have " + ballsLeft + " balls left");
+        }
+        else if (Input.GetKey(KeyCode.Space) && ballsLeft <= 0)
+        {
+            Debug.Log("No balls left");
         }
     }
 
 
+
     // Public method to update the score
     public void updateScore(int pointsToAdd)
-
     {
         score += pointsToAdd * scoreMultiplier; // Update score with multiplier
         UpdateScoreUI(); // Call a method to update the UI if needed
@@ -137,10 +119,8 @@ public class GameManager : MonoBehaviour
         scoreText.text = score.ToString();
     }
 
-
     // Function called by the Start Button
     public void StartGame()
-
     {
         Debug.Log("startGame() was clicked");
         if (!isGameOn)
@@ -149,8 +129,6 @@ public class GameManager : MonoBehaviour
             titleScreen.SetActive(false); // Hide the title screen
             scoreText.gameObject.SetActive(true); // Show the score text
             highScoreText.gameObject.SetActive(false);
-
-         
         }
     }
 
@@ -160,27 +138,29 @@ public class GameManager : MonoBehaviour
         // Check if enough time has passed for the next bonus spawn
         if (Time.time >= nextBonusSpawnTime)
         {
-            // Choose a random bonus from the array
-            GameObject randomBonus = bonusPrefabs[Random.Range(0, bonusPrefabs.Length)];
+            // Check how many bonuses are currently on screen
+            if (GameObject.FindGameObjectsWithTag("Bonus").Length < 5) // Limit to max 5 bonuses
+            {
+                // Choose a random bonus from the array
+                GameObject randomBonus = bonusPrefabs[Random.Range(0, bonusPrefabs.Length)];
 
+                // Choose a random position within the play area
+                Vector3 spawnPosition = new Vector3(
+                    Random.Range(-6.45f, 6.45f),
+                    Random.Range(-1.8f, 5.30f),
+                    0f
+                );
 
-            // Choose a random position within the play area
-            Vector3 spawnPosition = new Vector3(
-                Random.Range(-6.45f, 6.45f),
-                Random.Range(-1.8f, 5.30f),
-                0f
-            );
+                // Instantiate the bonus
+                Instantiate(randomBonus, spawnPosition, Quaternion.identity);
 
-            // Instantiate the bonus
-            Instantiate(randomBonus, spawnPosition, Quaternion.identity);
-
-            // Set the next time when a bonus can be spawned
-            nextBonusSpawnTime = Time.time + bonusSpawnRate; // Update the next spawn time
+                // Set the next time when a bonus can be spawned
+                nextBonusSpawnTime = Time.time + bonusSpawnRate; // Update the next spawn time
+            }
         }
     }
 
     public void EndGame()
-
     {
         audioSource.volume = volume; // Set the audio source volume
         audioSource.PlayOneShot(gameOverSound);
@@ -203,17 +183,14 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator ResetGameAfterDelay(float delay)
     {
-
         yield return new WaitForSeconds(delay); // Wait for the specified delay
 
         // Remove all bonuses on screen
-
         GameObject[] bonuses = GameObject.FindGameObjectsWithTag("Bonus");
         foreach (GameObject bonus in bonuses)
         {
             Destroy(bonus);
         }
-
 
         // Reset score and balls left
         score = 0;

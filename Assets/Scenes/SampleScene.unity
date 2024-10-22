@@ -323,7 +323,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2065121134}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: startGame
+        m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4318,13 +4318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99fe4679a41438642a0caf774ee9db70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  score: 0
-  highScore: 0
   startingBalls: 30
-  ballsLeft: 0
-  ballOnScreen: 0
-  isGameOn: 0
-  scoreMultiplier: 1
   bonusSpawnRate: 2
   bonusPrefabs:
   - {fileID: 7952886188716922488, guid: 6dc124aa27f182045b05780f62eff1f1, type: 3}
@@ -4336,10 +4330,6 @@ MonoBehaviour:
   highScoreText: {fileID: 541312562}
   finalScoreText: {fileID: 450346817}
   ballsLeftText: {fileID: 1778087900}
-  bonusSpawnMinX: -6
-  bonusSpawnMaxX: 6
-  bonusSpawnMinY: -1.8
-  bonusSpawnMaxY: 5.3
   gameOverSound: {fileID: 8300000, guid: 0ba80f1be1fc34047b074bfd4a6040c0, type: 3}
   popSound: {fileID: 8300000, guid: b5ddf37d8024ee04faf6dc02f88b6c62, type: 3}
   volume: 0.1
@@ -4673,7 +4663,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2645412293348712773, guid: 8f7d2ad1cc4995a4f837eeafa31216ad, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2645412293348712773, guid: 8f7d2ad1cc4995a4f837eeafa31216ad, type: 3}
       propertyPath: m_TagString
