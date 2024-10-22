@@ -8,7 +8,7 @@ public abstract class Bonus : MonoBehaviour
     [SerializeField] protected float bonusDuration = 4f;
 
     // This method will be called when a bonus is collected
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) //INHERITANCE all bonus type inherits from this
     {
         if (other.CompareTag("Ball"))
         {

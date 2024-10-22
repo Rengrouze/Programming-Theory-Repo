@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public int score { get; private set; } = 0; // Score is publicly readable but only writable within this class
-    public int highScore { get; private set; } = 0; // Same for highScore
+    public int highScore { get; private set; } = 0; // Same for highScore  ENCAPSULATION exemple
     public int startingBalls;
     public int ballsLeft { get; private set; } // Make ballsLeft read-only from outside
     private int ballOnScreen = 0; // Keep track of how many balls are currently on the screen
@@ -113,6 +113,8 @@ public class GameManager : MonoBehaviour
         score += pointsToAdd * scoreMultiplier; // Update score with multiplier
         UpdateScoreUI(); // Call a method to update the UI if needed
     }
+    // ABSTRACTION: This method encapsulates the logic for updating the score,
+    // hiding the details of how the score is calculated and displayed.
 
     void UpdateScoreUI()
     {

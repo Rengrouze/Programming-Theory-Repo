@@ -11,7 +11,7 @@ public class ExtraBalls : Bonus
         gameManager = FindObjectOfType<GameManager>();
     }
 
-    protected override void ApplyBonus()
+    protected override void ApplyBonus() // POLYMORPHISM each bonus have individual effect
     {
 
         int currentBalls = gameManager.GetBallsLeft(); // Get current balls left
