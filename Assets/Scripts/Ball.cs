@@ -1,0 +1,48 @@
+using UnityEngine;
+
+public class Ball : MonoBehaviour
+{
+    private GameManager gameManager;
+
+    [SerializeField] private AudioClip hitSound; // Sound to play when the ball hits something
+    private AudioSource audioSource; // AudioSource to play the sound
+<<<<<<< Updated upstream
+    [Range(0f, 1f)] // This will create a slider in the inspector for volume control
+    public float volume = 1f; // Volume range from 0 to 1
+=======
+    [Range(0f, 1f)] public float volume = 0.5f; // Volume range from 0 to 1
+    private float lowerBound = -10f;
+>>>>>>> Stashed changes
+
+    private void Start()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.clip = hitSound; // Set the hit sound clip
+    }
+
+    private void OnDestroy()
+    {
+        gameManager.BallDestroyed(); // Call the method in GameManager when this ball is destroyed
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (audioSource != null && hitSound != null && audioSource.enabled)
+        {
+            audioSource.PlayOneShot(hitSound);
+        }
+    }
+<<<<<<< Updated upstream
+=======
+
+    private void Update()
+    {
+        if (transform.position.y < lowerBound)
+        {
+            gameManager.SetBallOnScreen(gameManager.GetBallOnScreen() - 1); // Decrease the count of balls on screen
+            Destroy(gameObject); // Destroy the ball when out of bounds
+        }
+    }
+>>>>>>> Stashed changes
+}
