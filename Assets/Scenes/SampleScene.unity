@@ -2261,7 +2261,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Peebles
+  m_text: Peebles 0.2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9c72d6fc16242d247bd97d682cddf77f, type: 2}
   m_sharedMaterial: {fileID: 3313644382768377768, guid: 9c72d6fc16242d247bd97d682cddf77f, type: 2}
