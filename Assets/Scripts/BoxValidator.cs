@@ -30,7 +30,7 @@ public class BoxValidator : MonoBehaviour
         if (other.CompareTag("Ball"))
         {
             // Call the updateScore function from the GameManager script
-            gameManager.updateScore(points);
+            gameManager.updateScore(points*gameManager.scoreMultiplier);
 
             // Set the audio source volume
             audioSource.volume = volume; // Set the audio source volume
